@@ -9,7 +9,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <spring.version>4.3.14.RELEASE</spring.version>
+        <spring.version>5.2.6.RELEASE</spring.version>
         <freemarker.version>2.3.9</freemarker.version>
         <aspectj.version>1.9.1</aspectj.version>
         <jre.version>1.8</jre.version>
