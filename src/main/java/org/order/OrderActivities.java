@@ -14,7 +14,7 @@ import java.util.UUID;
         defaultTaskStartToCloseTimeoutSeconds = 60)
 public interface OrderActivities {
 
-    int createOrder(int requestId);
+    Integer createOrder(int requestId);
 
     void orderReview(int orderId);
 

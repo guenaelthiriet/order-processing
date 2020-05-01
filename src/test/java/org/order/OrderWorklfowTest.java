@@ -20,94 +20,63 @@ public class OrderWorklfowTest {
     @Rule
     public WorkflowTest workflowTest = new WorkflowTest();
 
-    List<String> trace;
+    List<String> trace = new ArrayList<String>();
 
     private OrderWorkflowClientFactory workflowFactory = new OrderWorkflowClientFactoryImpl();
 
     @Before
     public void setUp() throws Exception {
-        trace = new ArrayList<String>();
+
         // Register activity implementation to be used during test run
         // In real life some mocking framework to be used
         OrderActivities activities = new OrderActivities() {
 
             @Override
             public void orderManufacturing(int customerId) {
-                trace.add("sendConfirmation-" + customerId);
+                trace.add("orderManufacturing-" + customerId);
             }
 
             @Override
             public void orderPreparation(int requestId) {
-
+                trace.add("orderPreparation-" + requestId);
             }
 
             @Override
             public void orderReadyForPickup(int orderId, int customerId) {
-
+                trace.add("orderReadyForPickup-" + orderId + "-" + customerId);
             }
 
             @Override
             public void orderComplete(int requestId) {
-
+                trace.add("orderComplete-" + requestId);
             }
 
             @Override
-            public int createOrder(int requestId) {
-                trace.add("reserveCar-" + requestId);
+            public Integer createOrder(int requestId) {
+                trace.add(1234 + "-createOrder-" + requestId);
                 return 1234;
             }
 
             @Override
             public void orderReview(int orderId) {
-                trace.add("reserveAirline-" + orderId);
+                trace.add("orderReview-" + orderId);
             }
         };
         workflowTest.addActivitiesImplementation(activities);
         workflowTest.addWorkflowImplementationType(OrderWorkflowImpl.class);
     }
 
-    @After
-    public void tearDown() throws Exception {
-        trace = null;
-    }
-
     @Test
-    public void testReserveBoth() {
+    public void testOrder() {
         OrderWorkflowClient workflow = workflowFactory.getClient();
         Promise<Void> booked = workflow.makeOrder(123, 345);
         List<String> expected = new ArrayList<String>();
-        expected.add("reserveCar-123");
-        expected.add("reserveAirline-123");
-        expected.add("sendConfirmation-345");
-        AsyncAssert.assertEqualsWaitFor(expected, trace, booked);
-    }
-
-    @Test
-    public void testReserveAir() {
-        OrderWorkflowClient workflow = workflowFactory.getClient();
-        Promise<Void> booked = workflow.makeOrder(123, 345);
-        List<String> expected = new ArrayList<String>();
-        expected.add("reserveAirline-123");
-        expected.add("sendConfirmation-345");
-        AsyncAssert.assertEqualsWaitFor(expected, trace, booked);
-    }
-
-    @Test
-    public void testReserveCar() {
-        OrderWorkflowClient workflow = workflowFactory.getClient();
-        Promise<Void> booked = workflow.makeOrder(123, 345);
-        List<String> expected = new ArrayList<String>();
-        expected.add("reserveCar-123");
-        expected.add("sendConfirmation-345");
-        AsyncAssert.assertEqualsWaitFor(expected, trace, booked);
-    }
-
-    @Test
-    public void testReserveNone() {
-        OrderWorkflowClient workflow = workflowFactory.getClient();
-        Promise<Void> booked = workflow.makeOrder(123, 345);
-        List<String> expected = new ArrayList<String>();
-        expected.add("sendConfirmation-345");
+        expected.add("1234-createOrder-123");
+        expected.add("orderReview-1234");
+        expected.add("orderManufacturing-1234");
+        expected.add("orderPreparation-1234");
+        expected.add("orderReadyForPickup-1234-345");
+        expected.add("orderComplete-1234");
         AsyncAssert.assertEqualsWaitFor(expected, trace, booked);
     }
 

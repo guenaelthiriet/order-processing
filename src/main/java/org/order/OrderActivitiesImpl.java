@@ -7,7 +7,7 @@ import java.util.UUID;
 public class OrderActivitiesImpl implements OrderActivities {
 
     @Override
-    public int createOrder(int requestId) {
+    public Integer createOrder(int requestId) {
         System.out.printf("Creating order for Request ID: %d...\n", requestId);
         return new SecureRandom().nextInt();
     }
