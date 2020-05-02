@@ -2,6 +2,7 @@ package org.order;
 
 import com.amazonaws.services.simpleworkflow.AmazonSimpleWorkflow;
 import common.ConfigHelper;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 public class WorkflowExecutionStarter {
     private static AmazonSimpleWorkflow swfService;

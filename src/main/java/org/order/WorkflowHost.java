@@ -1,11 +1,11 @@
 package org.order;
 
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
 import com.amazonaws.services.simpleworkflow.AmazonSimpleWorkflow;
 import com.amazonaws.services.simpleworkflow.flow.WorkflowWorker;
 import common.ConfigHelper;
+
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class WorkflowHost {
     private static AmazonSimpleWorkflow swfService;
@@ -23,24 +23,23 @@ public class WorkflowHost {
     }
 
     public static void main(String[] args) throws Exception {
-    	ConfigHelper configHelper = loadConfiguration();
-    	
+        ConfigHelper configHelper = loadConfiguration();
+
         getWorkflowHost().startWorkflowWorker(configHelper);
 
         // Add a Shutdown hook to close WorkflowWorker
         addShutDownHook();
-        
+
         System.out.println("Please press any key to terminate service.");
         try {
             System.in.read();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
         System.exit(0);
     }
-        
+
     private void startWorkflowWorker(ConfigHelper configHelper) throws Exception {
         System.out.println("Starting Workflow Host Service...");
 
@@ -62,8 +61,8 @@ public class WorkflowHost {
         worker.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
         System.out.println("Workflow Host Service Stopped...");
     }
-    
-    static ConfigHelper loadConfiguration() throws IllegalArgumentException, IOException{
+
+    static ConfigHelper loadConfiguration() throws IllegalArgumentException, IOException {
         ConfigHelper configHelper = ConfigHelper.createConfig();
 
         // Create the client for Simple Workflow Service
@@ -73,18 +72,17 @@ public class WorkflowHost {
 
         return configHelper;
     }
-    
-    static void addShutDownHook(){
-  	  Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+
+    static void addShutDownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 
             public void run() {
                 try {
                     getWorkflowHost().stopHost();
-                }
-                catch (InterruptedException e) {
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-        }));    	
-  }
+        }));
+    }
 }
